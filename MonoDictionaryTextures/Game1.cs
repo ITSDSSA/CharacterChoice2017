@@ -11,6 +11,7 @@ using System.IO;
 using AudioPlayer;
 using Engine.Engines;
 using Loader;
+using Sprites;
 
 namespace MonoDictionaryTextures
 {
@@ -24,7 +25,8 @@ namespace MonoDictionaryTextures
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Dictionary<string, Texture2D> badges = new Dictionary<string, Texture2D>();
-        
+        CharacterSelector selector;
+        Player player;
 
         public Game1()
         {
@@ -41,6 +43,7 @@ namespace MonoDictionaryTextures
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            IsMouseVisible = true;
             new InputEngine(this);
             base.Initialize();
         }
@@ -53,26 +56,18 @@ namespace MonoDictionaryTextures
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            badges = ContentLoad<Texture2D>("Badges");
             
-            AudioManager.SoundEffects = ContentLoad<SoundEffect>("Audio");
+            selector = new CharacterSelector(
+                ContentLoader.ContentLoad<Texture2D>(Content,"Characters"), 
+                Content.Load<Texture2D>("Play Scene Background"), 
+                Vector2.Zero);
+
+            player = new Player(selector.CurrentSelected.Texture, new Vector2(100, 100));
+
+            AudioManager.SoundEffects = ContentLoader.ContentLoad<SoundEffect>(Content,"Audio");
 
         }
 
-        public Dictionary<String, T> ContentLoad<T>(string contentFolder)
-        {
-            DirectoryInfo dir = new DirectoryInfo(Content.RootDirectory + "\\" + contentFolder);
-            if (!dir.Exists)
-                throw new DirectoryNotFoundException();
-            Dictionary<String, T> result = new Dictionary<String, T>();
-            FileInfo[] files = dir.GetFiles("*.*");
-            foreach (FileInfo file in files)
-            {
-                string key = Path.GetFileNameWithoutExtension(file.Name);
-                result[key] = Content.Load<T>(contentFolder + "\\" + key);
-            }
-            return result;
-        }
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -101,6 +96,8 @@ namespace MonoDictionaryTextures
                 AudioManager.Play(ref player,"0");
                     }
             // TODO: Add your update logic here
+            player.Update();
+            selector.Update(player);
 
             base.Update(gameTime);
         }
@@ -113,10 +110,20 @@ namespace MonoDictionaryTextures
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            Vector2 pos = new Vector2(50,50);
+
+            player.draw(spriteBatch);
+            selector.draw(spriteBatch);
+
+            spriteBatch.End();
+            base.Draw(gameTime);
+        }
+
+        public void DrawBadges()
+        {
+            Vector2 pos = new Vector2(50, 50);
             // Draw 5 badges per row
             int ColCount = 5;
-            foreach (KeyValuePair<string,Texture2D> entry in badges )
+            foreach (KeyValuePair<string, Texture2D> entry in badges)
             {
                 spriteBatch.Draw(entry.Value, pos, Color.White);
 
@@ -128,9 +135,7 @@ namespace MonoDictionaryTextures
                     pos += new Vector2(-pos.X + 50, entry.Value.Height + 10);
                 }
             }
-            // TODO: Add your drawing code here
-            spriteBatch.End();
-            base.Draw(gameTime);
+
         }
     }
 }

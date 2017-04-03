@@ -44,9 +44,9 @@
     <Compile Include="ContentLoader.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="InputEngine.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Player.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -79,6 +79,7 @@
     <Content Include="Content\Characters\dog.jpg" />
     <Content Include="Content\Characters\moose.jpeg" />
     <Content Include="Content\Characters\owl.jpg" />
+    <Content Include="Content\Play Scene Background.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

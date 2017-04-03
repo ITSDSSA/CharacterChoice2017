@@ -13,20 +13,26 @@ namespace MonoDictionaryTextures
         public Texture2D Texture;
         public Rectangle Bound;
         public bool Selected = false;
+        public Vector2 size = new Vector2(64, 64);
 
         public CharacterSelection(Texture2D tx, Vector2 pos)
         {
             Texture = tx;
-            Bound = new Rectangle(pos.ToPoint(), new Point(tx.Width, tx.Height));
+            Bound = new Rectangle(pos.ToPoint(), size.ToPoint());
         }
 
         public void Update()
         {
             
-            if(Bound.Contains(InputEngine.MousePosition) && InputEngine.IsMouseLeftClick())
+            if (InputEngine.IsMouseLeftClick() && Bound.Contains(InputEngine.MousePosition))
             {
                 Selected = true;
             }
+        }
+
+        public void Draw(SpriteBatch sp)
+        {
+            sp.Draw(Texture, Bound, Color.White);
         }
     }
 }

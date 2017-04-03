@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Engine.Engines;
 
 namespace Sprites
 {
@@ -12,37 +14,40 @@ namespace Sprites
         public Texture2D Image;
         public Vector2 Position;
         public Rectangle BoundingRect;
+        public bool Visible = true;
+        public float Speed = 2.0f;
+        public Vector2 size = new Vector2(64, 64);
 
-        // Constructor expects to see a loaded Texture
-        // and a start position
-        public Player( Texture2D spriteImage,
+
+        public Player(Texture2D spriteImage,
                             Vector2 startPosition)
         {
-            //
-            // Take a copy of the texture passed down
             Image = spriteImage;
-            // Take a copy of the start position
             Position = startPosition;
-            // Calculate the bounding rectangle
-            BoundingRect = new Rectangle((int)startPosition.X, (int)startPosition.Y, Image.Width, Image.Height);
+            BoundingRect = new Rectangle(startPosition.ToPoint(), size.ToPoint());
 
         }
 
-        public void draw(SpriteBatch sp, Texture2D Image)
+        public void Update()
         {
-            if (Image != null)
-            {
-                sp.Draw(Image, Position, Color.White);
-            }
+            if (InputEngine.IsKeyHeld(Keys.A))
+                Position += new Vector2(-1,0) * Speed;
+            if (InputEngine.IsKeyHeld(Keys.S))
+                Position += new Vector2(1,0) * Speed;
+            if (InputEngine.IsKeyHeld(Keys.W))
+                Position += new Vector2(0, -1) * Speed;
+            if (InputEngine.IsKeyHeld(Keys.S))
+                Position += new Vector2(0, 1) * Speed;
+            BoundingRect = new Rectangle(Position.ToPoint(), size.ToPoint());
+
         }
 
-        public void Move(Vector2 delta)
+        public void draw(SpriteBatch sp)
         {
-            Position += delta;
-            BoundingRect = new Rectangle((int)Position.X, (int)Position.Y, Image.Width, Image.Height);
-            BoundingRect.X = (int)Position.X;
-            BoundingRect.Y = (int)Position.Y;
+            if(Visible)
+                sp.Draw(Image, BoundingRect, Color.White);
         }
 
+        
     }
 }

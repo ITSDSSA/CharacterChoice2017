@@ -26,6 +26,11 @@ namespace Engine.Engines
         private static MouseState previousMouseState;
         private static MouseState currentMouseState;
 
+        internal static bool IsKeyPressed(object key)
+        {
+            throw new NotImplementedException();
+        }
+
 
 #if ANDROID
         private static Vector2 previousAccelerometerReading;
