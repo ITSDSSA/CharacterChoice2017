@@ -271,3 +271,9 @@
 /processorParam:TextureFormat=Color
 /build:Play Scene Background.png
 
+#begin Audio/backingTrack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/backingTrack.wav
+

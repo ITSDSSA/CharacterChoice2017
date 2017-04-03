@@ -1,5 +1,7 @@
-﻿using Engine.Engines;
+﻿using AudioPlayer;
+using Engine.Engines;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Sprites;
@@ -13,8 +15,9 @@ namespace MonoDictionaryTextures
     class CharacterSelector
     {
         Texture2D _background;
+        Vector2 _position;
         bool _selecting;
-
+        SoundEffectInstance _backingTrackPlayer;
         Dictionary<string, CharacterSelection> characters = 
             new Dictionary<string, CharacterSelection>();
 
@@ -68,29 +71,48 @@ namespace MonoDictionaryTextures
 
         public void Update(Player p )
         {
-            // if the C key is pressed then we are hanging up
-            if(InputEngine.IsKeyPressed(Keys.C))
+            // if the Esc key is pressed then we are hanging up
+            if(InputEngine.IsKeyPressed(Keys.Escape))
                 Selecting = !Selecting;
 
             if(Selecting)
             {
+                AudioManager.Play(ref _backingTrackPlayer, "backingTrack");
+                // If selecting iterate over the characters in 
+                // the Dictionary and see if one is selected
+                // Note we only update the characters to catch a 
+                // Mouse press if we are in selection mode
                 foreach (var character in characters)
                 {
                     character.Value.Update();
                         if(character.Value.Selected)
                             CurrentSelected = character.Value;
+                    // Reset the character selected value as 
+                    // we have captured the selction in Current Selected
                     character.Value.Selected = false;
                     
                 }
+                // When done set the player texture
                 p.Image = CurrentSelected.Texture;
 
             }
+            // If not selecting then check player
+            else {
+                if (_backingTrackPlayer != null)
+                    if (_backingTrackPlayer.State == SoundState.Playing)
+                    { 
+                        _backingTrackPlayer.Stop();
+                        _backingTrackPlayer = null;
+                    }
+                 }
         }
 
         public void draw(SpriteBatch sp)
         {
             if (Selecting)
             {
+                // Draw the background and the Character Selection
+                // Choices
                 sp.Draw(_background, _position, Color.White);
                 foreach (var character in characters)
                     character.Value.Draw(sp);

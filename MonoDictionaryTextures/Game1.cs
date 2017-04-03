@@ -25,6 +25,7 @@ namespace MonoDictionaryTextures
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Dictionary<string, Texture2D> badges = new Dictionary<string, Texture2D>();
+        // create a character selector 
         CharacterSelector selector;
         Player player;
 
@@ -88,8 +89,7 @@ namespace MonoDictionaryTextures
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            
             if (InputEngine.IsKeyPressed(Keys.P))
             {
                 SoundEffectInstance player = null;
